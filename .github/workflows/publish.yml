@@ -1,0 +1,135 @@
+name: Publish SDK
+
+on:
+  push:
+    tags:
+      - "v*" # 正式版发布: v1.0.0, v1.1.0, etc.
+    branches:
+      - publish # Snapshot 发布
+
+jobs:
+  publish:
+    name: Publish to Maven Central
+    runs-on: macos-latest # 需要 macOS 来构建 iOS/tvOS 目标
+
+    # 设置权限
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "gradle"
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cocoapods
+            ~/Library/Caches/CocoaPods
+          key: ${{ runner.os }}-cocoapods-${{ hashFiles('**/Podfile.lock', '**/build.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-cocoapods-
+
+      - name: Verify GPG key setup
+        run: |
+          echo "GPG key is configured via environment variables for in-memory signing"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Determine version type
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "type=release" >> $GITHUB_OUTPUT
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+            echo "Publishing release version (from tag: ${{ github.ref_name }})"
+          else
+            echo "type=snapshot" >> $GITHUB_OUTPUT
+            echo "tag=snapshot" >> $GITHUB_OUTPUT
+            echo "Publishing snapshot version (from branch: ${{ github.ref_name }})"
+          fi
+
+      - name: Build and test
+        run: ./gradlew build --stacktrace --no-daemon
+
+      - name: Stop Gradle Daemon
+        run: ./gradlew --stop
+
+      - name: Publish to Maven Central
+        env:
+          CENTRAL_PUBLISHER_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          CENTRAL_PUBLISHER_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "Publishing to Maven Central..."
+          echo "Version: $(./gradlew properties -q | grep "^version:" | awk '{print $2}')"
+          ./gradlew publishToSonatype --no-daemon --stacktrace --info
+
+      # 创建 GitHub Release（仅正式版）
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "## Publish Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "Released ${{ github.ref_name }} to Maven Central" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Next Steps:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Manually publish in Maven Central Portal: https://central.sonatype.com/publishing/deployments" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Published artifacts:**" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-core" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-logs" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-rum" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-webview" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-session-replay" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-ktor" >> $GITHUB_STEP_SUMMARY
+            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-ktor3" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Published snapshot from ${{ github.ref_name }} branch" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Snapshot repository: https://central.sonatype.com/repository/maven-snapshots/" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "## Publishing Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check logs for details. Common issues:" >> $GITHUB_STEP_SUMMARY
+          echo "- GPG key not properly configured (must be base64 encoded)" >> $GITHUB_STEP_SUMMARY
+          echo "- Maven Central credentials incorrect" >> $GITHUB_STEP_SUMMARY
+          echo "- Version already exists (for release builds)" >> $GITHUB_STEP_SUMMARY
+          echo "- iOS/tvOS build failed (check Xcode version)" >> $GITHUB_STEP_SUMMARY

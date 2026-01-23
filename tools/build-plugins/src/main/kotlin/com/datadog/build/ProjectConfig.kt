@@ -15,7 +15,24 @@ object ProjectConfig {
         const val BUILD_TOOLS_VERSION = "36.0.0"
     }
 
-    const val GROUP_ID = "com.datadoghq"
+    const val GROUP_ID = "cloud.flashcat"
 
-    val VERSION = Version(1, 5, 0, Version.Type.Dev)
+    private fun env(name: String): String? = System.getenv(name)?.takeIf { it.isNotBlank() }
+
+    private val isTagBuild: Boolean =
+        !env("CI_COMMIT_TAG").isNullOrBlank() ||
+            env("GITHUB_REF_TYPE") == "tag"
+
+    private val isPublishBranch: Boolean =
+        env("CI_COMMIT_BRANCH") == "publish" ||
+            env("GITHUB_REF") == "refs/heads/publish" ||
+            (env("GITHUB_REF_TYPE") == "branch" && env("GITHUB_REF_NAME") == "publish")
+
+    private val versionType: Version.Type = when {
+        isTagBuild -> Version.Type.Release
+        isPublishBranch -> Version.Type.Snapshot
+        else -> Version.Type.Dev
+    }
+
+    val VERSION = Version(0, 1, 0, versionType)
 }

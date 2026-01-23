@@ -58,30 +58,30 @@ kotlin {
 
         val compilerOptionFlag = "-compiler-option"
         val modulesFlag = "-fmodules"
-        pod("DatadogCore") {
+        pod("FlashcatCore") {
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 compilerOptionFlag,
                 modulesFlag
             )
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
-        // TODO RUM-11618 DatadogInternal cannot be used
-//        pod("DatadogInternal") {
+        // TODO RUM-11618 FlashcatInternal cannot be used
+//        pod("FlashcatInternal") {
 //            extraOpts += listOf(
 //                // proposed by KMP because of the @import usage in the binary
 //                compilerOptionFlag,
 //                modulesFlag
 //            )
-//            version = libs.versions.datadog.ios.get()
+//            version = libs.versions.flashcat.ios.get()
 //        }
-        pod("DatadogCrashReporting") {
+        pod("FlashcatCrashReporting") {
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 compilerOptionFlag,
                 modulesFlag
             )
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
     }
 

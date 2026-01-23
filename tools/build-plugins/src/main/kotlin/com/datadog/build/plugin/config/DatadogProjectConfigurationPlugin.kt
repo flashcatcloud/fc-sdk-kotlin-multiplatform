@@ -331,7 +331,7 @@ private fun Project.applyPublishingConfig(buildConfigExtension: DatadogBuildConf
 
                 // afterEvaluate here is important
                 afterEvaluate {
-                    artifactId = "dd-sdk-kotlin-multiplatform-$artifactId"
+                    artifactId = "fc-sdk-kotlin-multiplatform-$artifactId"
                 }
 
                 pom {
@@ -343,7 +343,7 @@ private fun Project.applyPublishingConfig(buildConfigExtension: DatadogBuildConf
                             }
                         }
                     )
-                    url.set("https://github.com/DataDog/dd-sdk-kotlin-multiplatform/")
+                    url.set("https://github.com/flashcatcloud/fc-sdk-kotlin-multiplatform/")
 
                     licenses {
                         license {
@@ -352,22 +352,22 @@ private fun Project.applyPublishingConfig(buildConfigExtension: DatadogBuildConf
                         }
                     }
                     organization {
-                        name.set("Datadog")
-                        url.set("https://www.datadoghq.com/")
+                        name.set("Flashcat")
+                        url.set("https://flashcat.cloud/")
                     }
                     developers {
                         developer {
-                            name.set("Datadog")
-                            email.set("info@datadoghq.com")
-                            organization.set("Datadog")
-                            organizationUrl.set("https://www.datadoghq.com/")
+                            name.set("Flashcat")
+                            email.set("contact@flashcat.cloud")
+                            organization.set("Flashcat")
+                            organizationUrl.set("https://flashcat.cloud/")
                         }
                     }
 
                     scm {
-                        url.set("https://github.com/DataDog/dd-sdk-kotlin-multiplatform/")
-                        connection.set("scm:git:git@github.com:Datadog/dd-sdk-kotlin-multiplatform.git")
-                        developerConnection.set("scm:git:git@github.com:Datadog/dd-sdk-kotlin-multiplatform.git")
+                        url.set("https://github.com/flashcatcloud/fc-sdk-kotlin-multiplatform/")
+                        connection.set("scm:git:git@github.com:flashcatcloud/fc-sdk-kotlin-multiplatform.git")
+                        developerConnection.set("scm:git:git@github.com:flashcatcloud/fc-sdk-kotlin-multiplatform.git")
                     }
                 }
             }
