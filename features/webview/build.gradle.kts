@@ -33,19 +33,19 @@ kotlin {
         framework {
             baseName = "DatadogKMPWebView"
         }
-        pod("DatadogWebViewTracking") {
+        pod("FlashcatWebViewTracking") {
             // TODO RUM-5208 by some reason ootb bindings for DatadogWebViewTracking are not generated correctly, so
             //  we go with a custom header (see custom cinterop below)
             linkOnly = true
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
-        pod("DatadogCore") {
+        pod("FlashcatCore") {
             linkOnly = true
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
-        pod("DatadogCrashReporting") {
+        pod("FlashcatCrashReporting") {
             linkOnly = true
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
     }
 

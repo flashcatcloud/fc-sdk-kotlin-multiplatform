@@ -1,6 +1,4 @@
 import com.datadog.build.ProjectConfig
-import com.datadog.build.utils.taskConfig
-import io.github.gradlenexus.publishplugin.AbstractNexusStagingRepositoryTask
 
 /*
  * Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
@@ -24,27 +22,18 @@ plugins {
 }
 
 nexusPublishing {
-    repositories {
+    this.repositories {
         sonatype {
             val sonatypeUsername = System.getenv("CENTRAL_PUBLISHER_USERNAME")
             val sonatypePassword = System.getenv("CENTRAL_PUBLISHER_PASSWORD")
-            stagingProfileId.set("378eecbbe2cf9")
             if (sonatypeUsername != null) username.set(sonatypeUsername)
             if (sonatypePassword != null) password.set(sonatypePassword)
             // see https://github.com/gradle-nexus/publish-plugin#publishing-to-maven-central-via-sonatype-central
             // For official documentation:
-            // staging repo publishing https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuration
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            // snapshot publishing https://central.sonatype.org/publish/publish-portal-snapshots/#publishing-via-other-methods
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
         }
     }
-}
-
-// nexus-publish plugin creates repository tasks only for the root project, so we cannot set a
-// sub-project-specific description
-project.taskConfig<AbstractNexusStagingRepositoryTask> {
-    repositoryDescription.set(
-        "${ProjectConfig.GROUP_ID}:dd-sdk-kotlin-multiplatform:${ProjectConfig.VERSION.name}"
-    )
 }
 
 /**

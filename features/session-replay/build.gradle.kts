@@ -32,21 +32,21 @@ kotlin {
             baseName = "DatadogKMPSessionReplay"
         }
 
-        pod("DatadogSessionReplay") {
+        pod("FlashcatSessionReplay") {
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 "-compiler-option",
                 "-fmodules"
             )
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
-        pod("DatadogCore") {
+        pod("FlashcatCore") {
             linkOnly = true
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
-        pod("DatadogCrashReporting") {
+        pod("FlashcatCrashReporting") {
             linkOnly = true
-            version = libs.versions.datadog.ios.get()
+            version = libs.versions.flashcat.ios.get()
         }
     }
 
