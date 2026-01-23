@@ -57,6 +57,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Install CocoaPods dependencies
+        run: |
+          # Ensure CocoaPods is installed
+          gem install cocoapods --no-document
+          # Sync all CocoaPods for Kotlin Multiplatform (downloads and generates Kotlin bindings)
+          ./gradlew podInstall --stacktrace --no-daemon
+
       - name: Determine version type
         id: version
         run: |
