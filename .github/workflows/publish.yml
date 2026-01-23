@@ -77,8 +77,11 @@ jobs:
             echo "Publishing snapshot version (from branch: ${{ github.ref_name }})"
           fi
 
-      - name: Build and test
-        run: ./gradlew build --stacktrace --no-daemon
+      - name: Run JVM/Android tests
+        run: |
+          # 只运行 JVM/Android 测试
+          # iOS 测试由 fc-sdk-ios 项目负责
+          ./gradlew jvmUnitTestAll --stacktrace --no-daemon
 
       - name: Stop Gradle Daemon
         run: ./gradlew --stop
