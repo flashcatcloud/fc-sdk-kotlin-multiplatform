@@ -6,6 +6,9 @@ import com.datadog.build.ProjectConfig
  * Copyright 2016-Present Datadog, Inc.
  */
 
+version = ProjectConfig.VERSION.name
+group = ProjectConfig.GROUP_ID
+
 plugins {
     // trick: for the same plugin versions in all sub-modules
     alias(libs.plugins.androidApplication) apply false
@@ -16,24 +19,34 @@ plugins {
     alias(libs.plugins.dependencyLicense) apply false
     alias(libs.plugins.mokkery) apply false
     alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.nexusPublish)
     // false - just to load classes into a classpath
     id("datadog-build-config") apply false
 }
 
-nexusPublishing {
-    this.repositories {
-        sonatype {
-            val sonatypeUsername = System.getenv("CENTRAL_PUBLISHER_USERNAME")
-            val sonatypePassword = System.getenv("CENTRAL_PUBLISHER_PASSWORD")
-            if (sonatypeUsername != null) username.set(sonatypeUsername)
-            if (sonatypePassword != null) password.set(sonatypePassword)
-            // see https://github.com/gradle-nexus/publish-plugin#publishing-to-maven-central-via-sonatype-central
-            // For official documentation:
-            // snapshot publishing https://central.sonatype.org/publish/publish-portal-snapshots/#publishing-via-other-methods
-            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
-        }
-    }
+// Maven Central Portal (2024+) configuration for publishing
+// Using Vanniktech Maven Publish Plugin with Central Portal support
+//
+// Credentials must be set via environment variables:
+// - ORG_GRADLE_PROJECT_mavenCentralUsername: Your Maven Central Portal username (from generated token)
+// - ORG_GRADLE_PROJECT_mavenCentralPassword: Your Maven Central Portal password (from generated token)
+// - GPG_PRIVATE_KEY: Your GPG private key (base64 encoded)
+// - GPG_PASSWORD: Your GPG key passphrase
+//
+// Publishing workflow:
+// 1. For SNAPSHOT: ./gradlew publishAllPublicationsToMavenCentralRepository
+// 2. For RELEASE: Same command, then manually publish in Portal UI (or set automaticRelease=true)
+
+// Note: All publishing configuration is now handled by the Vanniktech plugin
+// configured in each subproject via DatadogProjectConfigurationPlugin
+
+// Convenience task to publish all modules
+tasks.register("publishAll") {
+    description = "Publish all modules to Maven Central Portal"
+    group = "publishing"
+
+    dependsOn(subprojects.mapNotNull {
+        it.tasks.findByName("publishAllPublicationsToMavenCentralRepository")
+    })
 }
 
 /**

@@ -11,6 +11,9 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.datadog.build.ProjectConfig
 import com.datadog.build.utils.taskConfig
+import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,6 +21,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
@@ -317,71 +321,120 @@ private fun CommonExtension<*, *, *, *, *, *>.packagingConfigure() {
 // region Publishing
 
 private fun Project.applyPublishingConfig(buildConfigExtension: DatadogBuildConfigExtension) {
+    val projectName = name
+
+    // Configure Android target to publish release variant
     extensions.getByType<KotlinMultiplatformExtension>()
         .targets
         .withType<KotlinAndroidTarget> {
             publishLibraryVariants("release")
         }
 
-    val publishingExtension = extensions.getByType<PublishingExtension>()
-        .apply {
-            publications.withType<MavenPublication> {
-                groupId = ProjectConfig.GROUP_ID
-                version = ProjectConfig.VERSION.name
+    // Apply Vanniktech plugin
+    pluginManager.apply("com.vanniktech.maven.publish.base")
 
-                // afterEvaluate here is important
-                afterEvaluate {
-                    artifactId = "fc-sdk-kotlin-multiplatform-$artifactId"
-                }
+    // Configure Vanniktech Maven Publish
+    configure<MavenPublishBaseExtension> {
+        // KotlinMultiplatform automatically handles sources and javadoc for all targets
+        configure(
+            KotlinMultiplatform(
+                javadocJar = com.vanniktech.maven.publish.JavadocJar.Empty(),
+                sourcesJar = true,
+                androidVariantsToPublish = listOf("release")
+            )
+        )
 
-                pom {
-                    name.set(artifactId)
-                    description.set(
-                        buildConfigExtension.pomDescription.map {
-                            it.ifEmpty {
-                                throw IllegalStateException("Published projects should have a description")
-                            }
-                        }
-                    )
-                    url.set("https://github.com/flashcatcloud/fc-sdk-kotlin-multiplatform/")
+        // Coordinates - artifactId will be set in afterEvaluate
+        coordinates(
+            groupId = ProjectConfig.GROUP_ID,
+            artifactId = "fc-sdk-kotlin-multiplatform-$projectName",
+            version = ProjectConfig.VERSION.name
+        )
 
-                    licenses {
-                        license {
-                            name.set("Apache-2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0")
-                        }
-                    }
-                    organization {
-                        name.set("Flashcat")
-                        url.set("https://flashcat.cloud/")
-                    }
-                    developers {
-                        developer {
-                            name.set("Flashcat")
-                            email.set("contact@flashcat.cloud")
-                            organization.set("Flashcat")
-                            organizationUrl.set("https://flashcat.cloud/")
-                        }
-                    }
-
-                    scm {
-                        url.set("https://github.com/flashcatcloud/fc-sdk-kotlin-multiplatform/")
-                        connection.set("scm:git:git@github.com:flashcatcloud/fc-sdk-kotlin-multiplatform.git")
-                        developerConnection.set("scm:git:git@github.com:flashcatcloud/fc-sdk-kotlin-multiplatform.git")
+        // POM configuration
+        pom {
+            name.set(projectName)
+            description.set(
+                buildConfigExtension.pomDescription.map {
+                    it.ifEmpty {
+                        throw IllegalStateException("Published projects should have a description")
                     }
                 }
+            )
+            inceptionYear.set("2025")
+            url.set("https://github.com/flashcatcloud/fc-sdk-kotlin-multiplatform")
+
+            licenses {
+                license {
+                    name.set("The Apache License, Version 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    distribution.set("repo")
+                }
+            }
+
+            organization {
+                name.set("FlashCat, Inc.")
+                url.set("https://flashcat.cloud")
+            }
+
+            developers {
+                developer {
+                    id.set("flashcat")
+                    name.set("FlashCat")
+                    email.set("support@flashcat.cloud")
+                    organization.set("FlashCat, Inc.")
+                    organizationUrl.set("https://flashcat.cloud")
+                }
+            }
+
+            scm {
+                url.set("https://github.com/flashcatcloud/fc-sdk-kotlin-multiplatform")
+                connection.set("scm:git:git@github.com:flashcatcloud/fc-sdk-kotlin-multiplatform.git")
+                developerConnection.set("scm:git:git@github.com:flashcatcloud/fc-sdk-kotlin-multiplatform.git")
             }
         }
 
-    afterEvaluate {
-        extensions.getByType<SigningExtension>()
-            .apply {
-                val privateKey = System.getenv("GPG_PRIVATE_KEY")
-                val password = System.getenv("GPG_PASSWORD")
-                isRequired = !hasProperty("dd-skip-signing")
-                useInMemoryPgpKeys(privateKey, password)
-                sign(publishingExtension.publications)
+        // Publish to Maven Central (Vanniktech 0.33.0+ supports Central Portal snapshots)
+        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = false)
+    }
+
+    // Manual signing configuration
+    // This allows using base64-encoded GPG keys
+    val signingExtension = extensions.findByType(SigningExtension::class)
+    if (signingExtension == null) {
+        logger.error("Missing signing extension for $projectName")
+        return
+    }
+
+    signingExtension.apply {
+        // Signing is required unless explicitly skipped
+        isRequired = !hasProperty("dd-skip-signing")
+
+        val privateKey = System.getenv("GPG_PRIVATE_KEY")
+        val password = System.getenv("GPG_PASSWORD")
+
+        if (privateKey != null && password != null) {
+            // Decode base64 if needed
+            val decodedKey = try {
+                String(java.util.Base64.getDecoder().decode(privateKey))
+            } catch (e: Exception) {
+                privateKey // Already decoded / plain text
             }
+            useInMemoryPgpKeys(decodedKey, password)
+        }
+    }
+
+    afterEvaluate {
+        val publishingExtension = extensions.findByType<PublishingExtension>()
+        if (publishingExtension == null) {
+            logger.error("Missing publishing extension for $projectName")
+            return@afterEvaluate
+        }
+
+        // Sign all publications (required by Maven Central)
+        publishingExtension.publications.forEach { publication ->
+            signingExtension.sign(publication)
+        }
     }
 }
 

@@ -29,6 +29,8 @@ dependencies {
     implementation(libs.kotlinAntlrRuntime)
     implementation(libs.kotlinPoet)
     implementation(libs.gson)
+    // Vanniktech Maven Publish Plugin
+    implementation(libs.vanniktechPublishPlugin)
 
     testImplementation(libs.bundles.jUnit5)
     testImplementation(libs.bundles.jvmTestTools)
