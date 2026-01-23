@@ -36,7 +36,7 @@ kotlin {
         }
 
         val compilerOptionFlag = "-compiler-option"
-        pod("FlashcatRUM") {
+        pod("DatadogRUM") {
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 compilerOptionFlag,
@@ -49,17 +49,17 @@ kotlin {
                 compilerOptionFlag,
                 "-DDDRUMErrorEventErrorMeta=DDRUMErrorEventErrorMetaInfo"
             )
-            version = libs.versions.flashcat.ios.get()
+            version = libs.versions.datadog.ios.get()
         }
         // need to link it only for the tests so far (maybe this will change
         // later with SDK setup changes)
-        pod("FlashcatCore") {
+        pod("DatadogCore") {
             linkOnly = true
-            version = libs.versions.flashcat.ios.get()
+            version = libs.versions.datadog.ios.get()
         }
-        pod("FlashcatCrashReporting") {
+        pod("DatadogCrashReporting") {
             linkOnly = true
-            version = libs.versions.flashcat.ios.get()
+            version = libs.versions.datadog.ios.get()
         }
     }
 
