@@ -7,7 +7,7 @@
 package com.datadog.kmp.core.configuration
 
 import com.datadog.kmp.Datadog
-import com.datadog.kmp.DatadogSite
+import com.datadog.kmp.FlashcatSite
 
 /**
  * An object describing the configuration of the Datadog SDK.
@@ -27,7 +27,7 @@ internal constructor(
     internal data class Core(
         val batchSize: BatchSize,
         val uploadFrequency: UploadFrequency,
-        val site: DatadogSite,
+        val site: FlashcatSite,
         val batchProcessingLevel: BatchProcessingLevel,
         val trackCrashes: Boolean,
         val proxyConfiguration: ProxyConfiguration?,
@@ -74,7 +74,7 @@ internal constructor(
         /**
          * Let the SDK target your preferred Datadog's site.
          */
-        fun useSite(site: DatadogSite): Builder {
+        fun useSite(site: FlashcatSite): Builder {
             coreConfig = coreConfig.copy(site = site)
             return this
         }
@@ -142,7 +142,7 @@ internal constructor(
         private val DEFAULT_CORE_CONFIG = Core(
             batchSize = BatchSize.MEDIUM,
             uploadFrequency = UploadFrequency.AVERAGE,
-            site = DatadogSite.US1,
+            site = FlashcatSite.CN,
             batchProcessingLevel = BatchProcessingLevel.MEDIUM,
             trackCrashes = true,
             proxyConfiguration = null,

@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.Extensions
 import android.util.Log as AndroidLog
-import com.datadog.android.DatadogSite as DatadogSiteAndroid
+import com.datadog.android.FlashcatSite as FlashcatSiteAndroid
 import com.datadog.android.core.configuration.BatchProcessingLevel as BatchProcessingLevelAndroid
 import com.datadog.android.core.configuration.BatchSize as BatchSizeAndroid
 import com.datadog.android.core.configuration.Configuration as ConfigurationAndroid
@@ -91,17 +91,12 @@ internal class DatadogExtTest {
     }
 
     @Test
-    fun `M return valid native value W DatadogSite_native`() {
+    fun `M return valid native value W FlashcatSite_native`() {
         mapOf(
-            DatadogSite.US1 to DatadogSiteAndroid.US1,
-            DatadogSite.US1_FED to DatadogSiteAndroid.US1_FED,
-            DatadogSite.US3 to DatadogSiteAndroid.US3,
-            DatadogSite.US5 to DatadogSiteAndroid.US5,
-            DatadogSite.EU1 to DatadogSiteAndroid.EU1,
-            DatadogSite.AP1 to DatadogSiteAndroid.AP1,
-            DatadogSite.AP2 to DatadogSiteAndroid.AP2
+            FlashcatSite.CN to FlashcatSiteAndroid.CN,
+            FlashcatSite.STAGING to FlashcatSiteAndroid.STAGING
         )
-            .assertExhaustive(DatadogSite.entries)
+            .assertExhaustive(FlashcatSite.entries)
             .assertAllKeysEqualToValuesWhen { it.native }
     }
 

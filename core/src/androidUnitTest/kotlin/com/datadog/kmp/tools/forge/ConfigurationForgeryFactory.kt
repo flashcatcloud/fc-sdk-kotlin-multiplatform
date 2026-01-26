@@ -5,7 +5,7 @@
  */
 package com.datadog.kmp.tools.forge
 
-import com.datadog.kmp.DatadogSite
+import com.datadog.kmp.FlashcatSite
 import com.datadog.kmp.core.configuration.BatchProcessingLevel
 import com.datadog.kmp.core.configuration.BatchSize
 import com.datadog.kmp.core.configuration.Configuration
@@ -20,7 +20,7 @@ internal class ConfigurationForgeryFactory : ForgeryFactory<Configuration> {
         coreConfig = Configuration.Core(
             batchSize = forge.aValueFrom(BatchSize::class.java),
             uploadFrequency = forge.aValueFrom(UploadFrequency::class.java),
-            site = forge.aValueFrom(DatadogSite::class.java),
+            site = forge.aValueFrom(FlashcatSite::class.java),
             batchProcessingLevel = forge.aValueFrom(BatchProcessingLevel::class.java),
             trackCrashes = forge.aBool(),
             proxyConfiguration = forge.aNullable {

@@ -95,10 +95,8 @@ registerPluginSpecificAggregationTask(
 
 val publishableProjects = listOf(
     projects.core,
-    projects.features.logs,
     projects.features.rum,
     projects.features.webview,
-    projects.features.sessionReplay,
     projects.integrations.ktor,
     projects.integrations.ktor3
 )

@@ -147,10 +147,8 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Published artifacts:**" >> $GITHUB_STEP_SUMMARY
             echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-core" >> $GITHUB_STEP_SUMMARY
-            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-logs" >> $GITHUB_STEP_SUMMARY
             echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-rum" >> $GITHUB_STEP_SUMMARY
             echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-webview" >> $GITHUB_STEP_SUMMARY
-            echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-session-replay" >> $GITHUB_STEP_SUMMARY
             echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-ktor" >> $GITHUB_STEP_SUMMARY
             echo "- cloud.flashcat:fc-sdk-kotlin-multiplatform-ktor3" >> $GITHUB_STEP_SUMMARY
           else
@@ -170,7 +168,7 @@ jobs:
               "msgtype": "markdown",
               "markdown": {
                 "title": "fc-sdk-kotlin-multiplatform 发布通知",
-                "text": "### ✅ fc-sdk-kotlin-multiplatform 发布成功\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: fc-sdk-kotlin-multiplatform-core, logs, rum 等\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                "text": "### ✅ fc-sdk-kotlin-multiplatform 发布成功\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: fc-sdk-kotlin-multiplatform-core, rum, webview, ktor\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
               }
             }
 
@@ -196,6 +194,6 @@ jobs:
               "msgtype": "markdown",
               "markdown": {
                 "title": "fc-sdk-kotlin-multiplatform 发布通知",
-                "text": "### ❌ fc-sdk-kotlin-multiplatform 发布失败\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: fc-sdk-kotlin-multiplatform-core, logs, rum 等\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                "text": "### ❌ fc-sdk-kotlin-multiplatform 发布失败\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: fc-sdk-kotlin-multiplatform-core, rum, webview, ktor\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
               }
             }

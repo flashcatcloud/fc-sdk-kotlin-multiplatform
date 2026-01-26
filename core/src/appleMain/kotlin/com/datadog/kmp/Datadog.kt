@@ -286,15 +286,10 @@ internal val BatchSize.native: DDUploadFrequency
         BatchSize.SMALL -> DDBatchSizeSmall
     }
 
-private val DatadogSite.native: DDSite
+private val FlashcatSite.native: DDSite
     get() = when (this) {
-        DatadogSite.US1 -> DDSite.us1()
-        DatadogSite.US1_FED -> DDSite.us1_fed()
-        DatadogSite.US3 -> DDSite.us3()
-        DatadogSite.US5 -> DDSite.us5()
-        DatadogSite.EU1 -> DDSite.eu1()
-        DatadogSite.AP1 -> DDSite.ap1()
-        DatadogSite.AP2 -> DDSite.ap2()
+        FlashcatSite.CN -> DDSite.cn()
+        FlashcatSite.STAGING -> DDSite.staging()
     }
 
 private fun Map<String, Any?>.eraseKeyType(): Map<Any?, *> {

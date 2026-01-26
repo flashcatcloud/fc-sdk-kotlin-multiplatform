@@ -35,7 +35,7 @@ import kotlin.test.assertTrue
 
 @Suppress("FunctionNaming")
 internal class DatadogExtTest {
-    // TODO RUM-8122: support TrackingConsent and DatadogSite mappings after isEqual
+    // TODO RUM-8122: support TrackingConsent and FlashcatSite mappings after isEqual
     //  method is supported for them in iOS code
 
     @Test

@@ -16,7 +16,7 @@ import com.datadog.kmp.internal.InternalAttributes
 import com.datadog.kmp.privacy.TrackingConsent
 import android.util.Log as AndroidLog
 import com.datadog.android.Datadog as DatadogAndroid
-import com.datadog.android.DatadogSite as DatadogSiteAndroid
+import com.datadog.android.FlashcatSite as FlashcatSiteAndroid
 import com.datadog.android.core.configuration.BatchProcessingLevel as BatchProcessingLevelAndroid
 import com.datadog.android.core.configuration.BatchSize as BatchSizeAndroid
 import com.datadog.android.core.configuration.Configuration as ConfigurationAndroid
@@ -268,13 +268,8 @@ internal val BatchSize.native: BatchSizeAndroid
         BatchSize.SMALL -> BatchSizeAndroid.SMALL
     }
 
-internal val DatadogSite.native: DatadogSiteAndroid
+internal val FlashcatSite.native: FlashcatSiteAndroid
     get() = when (this) {
-        DatadogSite.US1 -> DatadogSiteAndroid.US1
-        DatadogSite.US1_FED -> DatadogSiteAndroid.US1_FED
-        DatadogSite.US3 -> DatadogSiteAndroid.US3
-        DatadogSite.US5 -> DatadogSiteAndroid.US5
-        DatadogSite.EU1 -> DatadogSiteAndroid.EU1
-        DatadogSite.AP1 -> DatadogSiteAndroid.AP1
-        DatadogSite.AP2 -> DatadogSiteAndroid.AP2
+        FlashcatSite.CN -> FlashcatSiteAndroid.CN
+        FlashcatSite.STAGING -> FlashcatSiteAndroid.STAGING
     }

@@ -8,7 +8,7 @@
 package com.datadog.kmp.sample
 
 import com.datadog.kmp.Datadog
-import com.datadog.kmp.DatadogSite
+import com.datadog.kmp.FlashcatSite
 import com.datadog.kmp.SdkLogVerbosity
 import com.datadog.kmp.core.configuration.BatchProcessingLevel
 import com.datadog.kmp.core.configuration.BatchSize
@@ -52,7 +52,7 @@ fun initDatadog(context: Any? = null) {
         env = "prod"
     )
         .trackCrashes(true)
-        .useSite(DatadogSite.US1)
+        .useSite(FlashcatSite.CN)
         .setBatchSize(BatchSize.MEDIUM)
         .setUploadFrequency(UploadFrequency.AVERAGE)
         .setBatchProcessingLevel(BatchProcessingLevel.MEDIUM)

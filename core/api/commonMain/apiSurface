@@ -11,14 +11,9 @@ expect object com.datadog.kmp.Datadog
   fun clearAccountInfo()
   fun clearAllData()
   fun stopInstance()
-enum com.datadog.kmp.DatadogSite
-  - US1
-  - US3
-  - US5
-  - EU1
-  - AP1
-  - AP2
-  - US1_FED
+enum com.datadog.kmp.FlashcatSite
+  - CN
+  - STAGING
 enum com.datadog.kmp.SdkLogVerbosity
   - DEBUG
   - WARN
@@ -36,7 +31,7 @@ data class com.datadog.kmp.core.configuration.Configuration
   class Builder
     constructor(String, String, String = NO_VARIANT, String? = null)
     fun build(): Configuration
-    fun useSite(com.datadog.kmp.DatadogSite): Builder
+    fun useSite(com.datadog.kmp.FlashcatSite): Builder
     fun setBatchSize(BatchSize): Builder
     fun setUploadFrequency(UploadFrequency): Builder
     fun setBatchProcessingLevel(BatchProcessingLevel): Builder
