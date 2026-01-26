@@ -192,7 +192,7 @@ private fun applySwiftCompatibilityLinkingWorkaround(kmpExtension: KotlinMultipl
     (kmpExtension as ExtensionAware).extensions
         .findByType<CocoapodsExtension>()
         ?.pods
-        ?.matching { it.name == "DatadogCrashReporting" }
+        ?.matching { it.name == "FlashcatCrashReporting" }
         ?.all {
             kmpExtension
                 .targets

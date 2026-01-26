@@ -35,7 +35,7 @@ kotlin {
             baseName = "DatadogKMPLogs"
         }
 
-        pod("DatadogLogs") {
+        pod("FlashcatLogs") {
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 "-compiler-option",
@@ -45,11 +45,11 @@ kotlin {
         }
         // need to link it only for the tests so far (maybe this will change
         // later with SDK setup changes)
-        pod("DatadogCore") {
+        pod("FlashcatCore") {
             linkOnly = true
             version = libs.versions.datadog.ios.get()
         }
-        pod("DatadogCrashReporting") {
+        pod("FlashcatCrashReporting") {
             linkOnly = true
             version = libs.versions.datadog.ios.get()
         }

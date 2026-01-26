@@ -34,5 +34,5 @@ object ProjectConfig {
         else -> Version.Type.Dev
     }
 
-    val VERSION = Version(0, 1, 0, versionType)
+    val VERSION = Version(0, 3, 0, versionType)
 }
