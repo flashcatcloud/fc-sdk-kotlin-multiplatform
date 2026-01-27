@@ -40,12 +40,14 @@ kotlin {
             version = libs.versions.datadog.ios.get()
         }
         pod("FlashcatCore") {
-            linkOnly = true
+            moduleName = "DatadogCore"
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
-            linkOnly = true
+            moduleName = "DatadogCrashReporting"
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
 

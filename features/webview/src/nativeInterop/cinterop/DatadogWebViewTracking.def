@@ -1,0 +1,3 @@
+package = cocoapods.DatadogWebViewTracking
+language = Objective-C
+modules = DatadogWebViewTracking

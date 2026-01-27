@@ -106,21 +106,21 @@ jobs:
             echo "- GPG_PASSPHRASE" >> $GITHUB_STEP_SUMMARY
             exit 0
           fi
-          
+
           VERSION=$(./gradlew properties -q | grep "^version:" | awk '{print $2}')
           echo "Publishing version: $VERSION"
-          
+
           # Determine if this is a snapshot or release build
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             echo "📦 Publishing release version (from tag: ${{ github.ref_name }})"
           else
             echo "📦 Publishing snapshot version (from branch: ${{ github.ref_name }})"
           fi
-          
+
           # Publish all modules using Vanniktech plugin
           # This will upload to Maven Central Portal
           ./gradlew publishAllPublicationsToMavenCentralRepository --no-daemon --stacktrace
-          
+
           echo "✅ Publishing completed"
 
       # 创建 GitHub Release（仅正式版）

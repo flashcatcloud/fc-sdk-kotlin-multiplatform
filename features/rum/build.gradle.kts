@@ -37,6 +37,7 @@ kotlin {
 
         val compilerOptionFlag = "-compiler-option"
         pod("FlashcatRUM") {
+            moduleName = "DatadogRUM"
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 compilerOptionFlag,
@@ -54,12 +55,14 @@ kotlin {
         // need to link it only for the tests so far (maybe this will change
         // later with SDK setup changes)
         pod("FlashcatCore") {
-            linkOnly = true
+            moduleName = "DatadogCore"
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
-            linkOnly = true
+            moduleName = "DatadogCrashReporting"
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
 

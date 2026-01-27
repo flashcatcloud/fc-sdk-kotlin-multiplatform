@@ -1,0 +1,3 @@
+package = cocoapods.DatadogRUM
+language = Objective-C
+modules = DatadogRUM
