@@ -61,8 +61,9 @@ jobs:
         run: |
           # Ensure CocoaPods is installed
           gem install cocoapods --no-document
-          # Sync all CocoaPods for Kotlin Multiplatform (downloads and generates Kotlin bindings)
-          ./gradlew podInstall --stacktrace --no-daemon
+          # Install CocoaPods for supported modules
+          # Excluded: logs, session-replay (native SDK not available)
+          ./gradlew :core:podInstall :features:rum:podInstall :features:webview:podInstall :integrations:ktor:podInstall :integrations:ktor3:podInstall --stacktrace --no-daemon
 
       - name: Determine version type
         id: version
@@ -79,9 +80,13 @@ jobs:
 
       - name: Run JVM/Android tests
         run: |
-          # 只运行 JVM/Android 测试
-          # iOS 测试由 fc-sdk-ios 项目负责
-          ./gradlew jvmUnitTestAll --stacktrace --no-daemon
+          # Run JVM/Android tests for supported modules
+          # iOS tests are handled by fc-sdk-ios project
+          # Excluded: logs, session-replay (native SDK not available)
+          ./gradlew :core:testDebugUnitTest :core:testReleaseUnitTest \
+            :features:rum:testDebugUnitTest :features:rum:testReleaseUnitTest \
+            :features:webview:testDebugUnitTest :features:webview:testReleaseUnitTest \
+            --stacktrace --no-daemon
 
       - name: Stop Gradle Daemon
         run: ./gradlew --stop
@@ -117,9 +122,14 @@ jobs:
             echo "📦 Publishing snapshot version (from branch: ${{ github.ref_name }})"
           fi
 
-          # Publish all modules using Vanniktech plugin
+          # Publish supported modules (excluded: logs, session-replay - native SDK not available)
           # This will upload to Maven Central Portal
-          ./gradlew publishAllPublicationsToMavenCentralRepository --no-daemon --stacktrace
+          ./gradlew :core:publishAllPublicationsToMavenCentralRepository \
+            :features:rum:publishAllPublicationsToMavenCentralRepository \
+            :features:webview:publishAllPublicationsToMavenCentralRepository \
+            :integrations:ktor:publishAllPublicationsToMavenCentralRepository \
+            :integrations:ktor3:publishAllPublicationsToMavenCentralRepository \
+            --no-daemon --stacktrace
 
           echo "✅ Publishing completed"
 
@@ -168,7 +178,7 @@ jobs:
               "msgtype": "markdown",
               "markdown": {
                 "title": "fc-sdk-kotlin-multiplatform 发布通知",
-                "text": "### ✅ fc-sdk-kotlin-multiplatform 发布成功\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: fc-sdk-kotlin-multiplatform-core, rum, webview, ktor\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                "text": "### ✅ fc-sdk-kotlin-multiplatform 发布成功\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: core, rum, webview, ktor, ktor3\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
               }
             }
 
@@ -194,6 +204,6 @@ jobs:
               "msgtype": "markdown",
               "markdown": {
                 "title": "fc-sdk-kotlin-multiplatform 发布通知",
-                "text": "### ❌ fc-sdk-kotlin-multiplatform 发布失败\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: fc-sdk-kotlin-multiplatform-core, rum, webview, ktor\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                "text": "### ❌ fc-sdk-kotlin-multiplatform 发布失败\n\n---\n\n 🔖 版本: ${{ github.ref_name }}\n\n 📦 包名: core, rum, webview, ktor, ktor3\n\n ☕ 平台: Maven Central\n\n 👨‍💻 发布者: ${{ github.actor }}\n\n 🚀 [查看详情](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
               }
             }
