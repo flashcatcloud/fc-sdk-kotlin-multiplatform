@@ -1,0 +1,3 @@
+package = cocoapods.DatadogCore
+language = Objective-C
+modules = DatadogCore

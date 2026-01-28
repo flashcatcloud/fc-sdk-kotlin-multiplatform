@@ -1,5 +1,6 @@
 import com.datadog.build.ProjectConfig
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
 import java.nio.file.Paths
 import kotlin.io.path.pathString
 
@@ -56,39 +57,62 @@ kotlin {
             baseName = "DatadogKMPCore"
         }
 
-        val compilerOptionFlag = "-compiler-option"
-        val modulesFlag = "-fmodules"
         pod("FlashcatCore") {
-            extraOpts += listOf(
-                // proposed by KMP because of the @import usage in the binary
-                compilerOptionFlag,
-                modulesFlag
-            )
+            // Use linkOnly and configure a custom cinterop instead
+            // because the module name (DatadogCore) differs from the pod name (FlashcatCore)
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
         }
         // TODO RUM-11618 FlashcatInternal cannot be used
 //        pod("FlashcatInternal") {
 //            extraOpts += listOf(
-//                // proposed by KMP because of the @import usage in the binary
-//                compilerOptionFlag,
-//                modulesFlag
+//                "-compiler-option",
+//                "-fmodules"
 //            )
 //            version = libs.versions.datadog.ios.get()
 //        }
         pod("FlashcatCrashReporting") {
-            extraOpts += listOf(
-                // proposed by KMP because of the @import usage in the binary
-                compilerOptionFlag,
-                modulesFlag
-            )
+            // Use linkOnly and configure a custom cinterop instead
+            // because the module name (DatadogCrashReporting) differs from the pod name (FlashcatCrashReporting)
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
         }
     }
 
     targets.all {
         if (this is KotlinNativeTarget && konanTarget.family.isAppleFamily) {
+            val isSimulator = konanTarget.name.contains("simulator", ignoreCase = true) ||
+                konanTarget.name.contains("x64", ignoreCase = true)
+            val sdkName = when (konanTarget.family) {
+                Family.IOS -> if (isSimulator) "iphonesimulator" else "iphoneos"
+                Family.TVOS -> if (isSimulator) "appletvsimulator" else "appletvos"
+                else -> "iphoneos"
+            }
+            val podsBaseDir = if (konanTarget.family == Family.TVOS) {
+                "cocoapods/synthetic/tvos"
+            } else {
+                "cocoapods/synthetic/ios"
+            }
+            val podsDir = layout.buildDirectory.dir(podsBaseDir)
+            val frameworkSearchPath = podsDir.get().dir("build/Debug-$sdkName").asFile.absolutePath
+
             compilations.getByName("main") {
                 cinterops.create("DDBinaryImages")
+                cinterops.create("DatadogCore") {
+                    extraOpts += listOf(
+                        "-compiler-option", "-fmodules",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatCore",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatInternal"
+                    )
+                }
+                cinterops.create("DatadogCrashReporting") {
+                    extraOpts += listOf(
+                        "-compiler-option", "-fmodules",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatCrashReporting",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatCore",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatInternal"
+                    )
+                }
             }
         }
     }
@@ -125,4 +149,20 @@ android {
 
 datadogBuildConfig {
     pomDescription = "The Core module of Datadog monitoring library for Kotlin Multiplatform."
+}
+
+// Ensure cinterop tasks depend on Pod build tasks
+tasks.matching { it.name.startsWith("cinteropDatadogCore") || it.name.startsWith("cinteropDatadogCrashReporting") }.configureEach {
+    when {
+        name.contains("IosSimulator", ignoreCase = true) || name.contains("IosX64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreIosSimulator", "podBuildFlashcatCrashReportingIosSimulator")
+        name.contains("IosArm64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreIos", "podBuildFlashcatCrashReportingIos")
+        name.contains("TvosSimulator", ignoreCase = true) || name.contains("TvosX64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreTvosSimulator", "podBuildFlashcatCrashReportingTvosSimulator")
+        name.contains("TvosArm64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreTvos", "podBuildFlashcatCrashReportingTvos")
+        else ->
+            dependsOn("podBuildFlashcatCoreIos", "podBuildFlashcatCrashReportingIos")
+    }
 }

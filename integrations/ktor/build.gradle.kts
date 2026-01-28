@@ -36,16 +36,21 @@ kotlin {
         // need to link it only for the tests so far (maybe this will change
         // later with SDK setup changes)
         pod("FlashcatRUM") {
+            moduleName = "DatadogRUM"
             linkOnly = true
             version = libs.versions.datadog.ios.get()
         }
         pod("FlashcatCore") {
+            moduleName = "DatadogCore"
             linkOnly = true
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
+            moduleName = "DatadogCrashReporting"
             linkOnly = true
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
 

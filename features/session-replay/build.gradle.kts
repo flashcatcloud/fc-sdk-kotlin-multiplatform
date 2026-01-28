@@ -33,6 +33,7 @@ kotlin {
         }
 
         pod("FlashcatSessionReplay") {
+            moduleName = "DatadogSessionReplay"
             extraOpts += listOf(
                 // proposed by KMP because of the @import usage in the binary
                 "-compiler-option",
@@ -41,12 +42,14 @@ kotlin {
             version = libs.versions.datadog.ios.get()
         }
         pod("FlashcatCore") {
-            linkOnly = true
+            moduleName = "DatadogCore"
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
-            linkOnly = true
+            moduleName = "DatadogCrashReporting"
             version = libs.versions.datadog.ios.get()
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
 
