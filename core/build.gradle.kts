@@ -81,12 +81,19 @@ kotlin {
 
     targets.all {
         if (this is KotlinNativeTarget && konanTarget.family.isAppleFamily) {
+            val isSimulator = konanTarget.name.contains("simulator", ignoreCase = true) ||
+                konanTarget.name.contains("x64", ignoreCase = true)
             val sdkName = when (konanTarget.family) {
-                Family.IOS -> if (konanTarget.name.contains("simulator", ignoreCase = true)) "iphonesimulator" else "iphoneos"
-                Family.TVOS -> if (konanTarget.name.contains("simulator", ignoreCase = true)) "appletvsimulator" else "appletvos"
+                Family.IOS -> if (isSimulator) "iphonesimulator" else "iphoneos"
+                Family.TVOS -> if (isSimulator) "appletvsimulator" else "appletvos"
                 else -> "iphoneos"
             }
-            val podsDir = layout.buildDirectory.dir("cocoapods/synthetic/ios")
+            val podsBaseDir = if (konanTarget.family == Family.TVOS) {
+                "cocoapods/synthetic/tvos"
+            } else {
+                "cocoapods/synthetic/ios"
+            }
+            val podsDir = layout.buildDirectory.dir(podsBaseDir)
             val frameworkSearchPath = podsDir.get().dir("build/Debug-$sdkName").asFile.absolutePath
 
             compilations.getByName("main") {
@@ -146,5 +153,16 @@ datadogBuildConfig {
 
 // Ensure cinterop tasks depend on Pod build tasks
 tasks.matching { it.name.startsWith("cinteropDatadogCore") || it.name.startsWith("cinteropDatadogCrashReporting") }.configureEach {
-    dependsOn("podBuildFlashcatCoreIos", "podBuildFlashcatCrashReportingIos")
+    when {
+        name.contains("IosSimulator", ignoreCase = true) || name.contains("IosX64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreIosSimulator", "podBuildFlashcatCrashReportingIosSimulator")
+        name.contains("IosArm64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreIos", "podBuildFlashcatCrashReportingIos")
+        name.contains("TvosSimulator", ignoreCase = true) || name.contains("TvosX64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreTvosSimulator", "podBuildFlashcatCrashReportingTvosSimulator")
+        name.contains("TvosArm64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreTvos", "podBuildFlashcatCrashReportingTvos")
+        else ->
+            dependsOn("podBuildFlashcatCoreIos", "podBuildFlashcatCrashReportingIos")
+    }
 }
