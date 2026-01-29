@@ -36,3 +36,5 @@ sdk_classpath
 
 # Generated .podspec files
 **/*.podspec
+
+local-docs/

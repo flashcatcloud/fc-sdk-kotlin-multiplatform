@@ -33,6 +33,7 @@ kotlin {
         framework {
             baseName = "DatadogKMPWebView"
         }
+        // Use linkOnly and configure custom cinterop instead
         pod("FlashcatWebViewTracking") {
             // TODO RUM-5208 by some reason ootb bindings for FlashcatWebViewTracking are not generated correctly, so
             //  we go with a custom header (see custom cinterop below)
@@ -40,22 +41,41 @@ kotlin {
             version = libs.versions.datadog.ios.get()
         }
         pod("FlashcatCore") {
-            moduleName = "DatadogCore"
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
-            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
-            moduleName = "DatadogCrashReporting"
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
-            extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
 
     targets.all {
         if (this is KotlinNativeTarget && konanTarget.family == Family.IOS) {
+            val isSimulator = konanTarget.name.contains("simulator", ignoreCase = true) ||
+                konanTarget.name.contains("x64", ignoreCase = true)
+            val sdkName = if (isSimulator) "iphonesimulator" else "iphoneos"
+            val podsDir = layout.buildDirectory.dir("cocoapods/synthetic/ios")
+            val frameworkSearchPath = podsDir.get().dir("build/Debug-$sdkName").asFile.absolutePath
+
             compilations.getByName("main") {
                 cinterops.create("DatadogWebView") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/DatadogWebViewTracking")
+                }
+                cinterops.create("DatadogCore") {
+                    extraOpts += listOf(
+                        "-compiler-option", "-fmodules",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatCore",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatInternal"
+                    )
+                }
+                cinterops.create("DatadogCrashReporting") {
+                    extraOpts += listOf(
+                        "-compiler-option", "-fmodules",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatCrashReporting",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatCore",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatInternal"
+                    )
                 }
             }
         }
@@ -86,4 +106,21 @@ mokkery {
 
 datadogBuildConfig {
     pomDescription = "The WebView tracking feature to use with the Datadog monitoring library for Kotlin Multiplatform."
+}
+
+// Ensure cinterop tasks depend on Pod build tasks
+tasks.matching { it.name.startsWith("cinteropDatadogCore") || it.name.startsWith("cinteropDatadogCrashReporting") }.configureEach {
+    when {
+        name.contains("DatadogCore") && (name.contains("IosSimulator", ignoreCase = true) || name.contains("IosX64", ignoreCase = true)) ->
+            dependsOn("podBuildFlashcatCoreIosSimulator")
+        name.contains("DatadogCore") && name.contains("IosArm64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCoreIos")
+
+        name.contains("DatadogCrashReporting") && (name.contains("IosSimulator", ignoreCase = true) || name.contains("IosX64", ignoreCase = true)) ->
+            dependsOn("podBuildFlashcatCrashReportingIosSimulator")
+        name.contains("DatadogCrashReporting") && name.contains("IosArm64", ignoreCase = true) ->
+            dependsOn("podBuildFlashcatCrashReportingIos")
+
+        else -> dependsOn("podBuildFlashcatCoreIos", "podBuildFlashcatCrashReportingIos")
+    }
 }
