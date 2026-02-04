@@ -6,6 +6,13 @@ on:
       - "v*" # 正式版发布: v1.0.0, v1.1.0, etc.
     branches:
       - publish # Snapshot 发布
+  workflow_dispatch: # 支持手动触发
+    inputs:
+      dry_run:
+        description: "Dry run (skip publish step)"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   publish:
