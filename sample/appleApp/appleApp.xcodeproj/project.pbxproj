@@ -7,16 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F604CAC22E68519E00A967B7 /* DatadogRUM in Frameworks */ = {isa = PBXBuildFile; productRef = F604CAC12E68519E00A967B7 /* DatadogRUM */; };
-		F604CAC42E6851A200A967B7 /* DatadogLogs in Frameworks */ = {isa = PBXBuildFile; productRef = F604CAC32E6851A200A967B7 /* DatadogLogs */; };
-		F604CAC62E6851AC00A967B7 /* DatadogRUM in Frameworks */ = {isa = PBXBuildFile; productRef = F604CAC52E6851AC00A967B7 /* DatadogRUM */; };
-		F604CAC82E6851B100A967B7 /* DatadogLogs in Frameworks */ = {isa = PBXBuildFile; productRef = F604CAC72E6851B100A967B7 /* DatadogLogs */; };
-		F604CACA2E68563D00A967B7 /* DatadogCore in Frameworks */ = {isa = PBXBuildFile; productRef = F604CAC92E68563D00A967B7 /* DatadogCore */; };
-		F604CACC2E68564400A967B7 /* DatadogCore in Frameworks */ = {isa = PBXBuildFile; productRef = F604CACB2E68564400A967B7 /* DatadogCore */; };
-		F64846B82C3DA0F5000AC3A0 /* DatadogCrashReporting in Frameworks */ = {isa = PBXBuildFile; productRef = F64846B72C3DA0F5000AC3A0 /* DatadogCrashReporting */; };
-		F64846BC2C3DA0F5000AC3A0 /* DatadogWebViewTracking in Frameworks */ = {isa = PBXBuildFile; productRef = F64846BB2C3DA0F5000AC3A0 /* DatadogWebViewTracking */; };
-		F66EF2A92C8F263C00AFC7E3 /* DatadogSessionReplay in Frameworks */ = {isa = PBXBuildFile; productRef = F66EF2A82C8F263C00AFC7E3 /* DatadogSessionReplay */; };
-		F6ACA4BF2CFDD2240060B034 /* DatadogCrashReporting in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACA4BE2CFDD2240060B034 /* DatadogCrashReporting */; };
+		F50F50B42F544B1D00959CBF /* FlashcatCore in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50B32F544B1D00959CBF /* FlashcatCore */; };
+		F50F50B62F544B1D00959CBF /* FlashcatCrashReporting in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50B52F544B1D00959CBF /* FlashcatCrashReporting */; };
+		F50F50B82F544B1D00959CBF /* FlashcatLogs-NoOp in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50B72F544B1D00959CBF /* FlashcatLogs-NoOp */; };
+		F50F50BA2F544B1D00959CBF /* FlashcatRUM in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50B92F544B1D00959CBF /* FlashcatRUM */; };
+		F50F50BC2F544B1D00959CBF /* FlashcatSessionReplay-NoOp in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50BB2F544B1D00959CBF /* FlashcatSessionReplay-NoOp */; };
+		F50F50BE2F544B1D00959CBF /* FlashcatTrace in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50BD2F544B1D00959CBF /* FlashcatTrace */; };
+		F50F50C02F544B1D00959CBF /* FlashcatWebViewTracking in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50BF2F544B1D00959CBF /* FlashcatWebViewTracking */; };
+		F50F50C22F544D2500959CBF /* FlashcatCore in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50C12F544D2500959CBF /* FlashcatCore */; };
+		F50F50C42F544D2500959CBF /* FlashcatCrashReporting in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50C32F544D2500959CBF /* FlashcatCrashReporting */; };
+		F50F50C62F544D2500959CBF /* FlashcatLogs-NoOp in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50C52F544D2500959CBF /* FlashcatLogs-NoOp */; };
+		F50F50C82F544D2500959CBF /* FlashcatRUM in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50C72F544D2500959CBF /* FlashcatRUM */; };
+		F50F50CA2F544D2500959CBF /* FlashcatSessionReplay-NoOp in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50C92F544D2500959CBF /* FlashcatSessionReplay-NoOp */; };
+		F50F50CC2F544D2500959CBF /* FlashcatTrace in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50CB2F544D2500959CBF /* FlashcatTrace */; };
+		F50F50CE2F544D2500959CBF /* FlashcatWebViewTracking in Frameworks */ = {isa = PBXBuildFile; productRef = F50F50CD2F544D2500959CBF /* FlashcatWebViewTracking */; };
 		F6EC61EC2CFDD52900B93F09 /* SampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EC61E62CFDD52900B93F09 /* SampleApp.swift */; };
 		F6EC61EE2CFDD52900B93F09 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EC61E82CFDD52900B93F09 /* ContentView.swift */; };
 		F6EC61F12CFDD58500B93F09 /* SampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EC61E62CFDD52900B93F09 /* SampleApp.swift */; };
@@ -55,12 +59,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F64846BC2C3DA0F5000AC3A0 /* DatadogWebViewTracking in Frameworks */,
-				F66EF2A92C8F263C00AFC7E3 /* DatadogSessionReplay in Frameworks */,
-				F604CAC22E68519E00A967B7 /* DatadogRUM in Frameworks */,
-				F604CAC42E6851A200A967B7 /* DatadogLogs in Frameworks */,
-				F604CACC2E68564400A967B7 /* DatadogCore in Frameworks */,
-				F64846B82C3DA0F5000AC3A0 /* DatadogCrashReporting in Frameworks */,
+				F50F50C02F544B1D00959CBF /* FlashcatWebViewTracking in Frameworks */,
+				F50F50BA2F544B1D00959CBF /* FlashcatRUM in Frameworks */,
+				F50F50B82F544B1D00959CBF /* FlashcatLogs-NoOp in Frameworks */,
+				F50F50B42F544B1D00959CBF /* FlashcatCore in Frameworks */,
+				F50F50BC2F544B1D00959CBF /* FlashcatSessionReplay-NoOp in Frameworks */,
+				F50F50B62F544B1D00959CBF /* FlashcatCrashReporting in Frameworks */,
+				F50F50BE2F544B1D00959CBF /* FlashcatTrace in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,10 +73,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F604CACA2E68563D00A967B7 /* DatadogCore in Frameworks */,
-				F604CAC82E6851B100A967B7 /* DatadogLogs in Frameworks */,
-				F6ACA4BF2CFDD2240060B034 /* DatadogCrashReporting in Frameworks */,
-				F604CAC62E6851AC00A967B7 /* DatadogRUM in Frameworks */,
+				F50F50CC2F544D2500959CBF /* FlashcatTrace in Frameworks */,
+				F50F50C62F544D2500959CBF /* FlashcatLogs-NoOp in Frameworks */,
+				F50F50CA2F544D2500959CBF /* FlashcatSessionReplay-NoOp in Frameworks */,
+				F50F50C82F544D2500959CBF /* FlashcatRUM in Frameworks */,
+				F50F50C22F544D2500959CBF /* FlashcatCore in Frameworks */,
+				F50F50C42F544D2500959CBF /* FlashcatCrashReporting in Frameworks */,
+				F50F50CE2F544D2500959CBF /* FlashcatWebViewTracking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +91,6 @@
 			children = (
 				F6EC61EA2CFDD52900B93F09 /* appleApp */,
 				7555FF7C242A565900829871 /* Products */,
-				7555FFB0242A642200829871 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,13 +101,6 @@
 				F6ACA4B02CFDD1B60060B034 /* Sample tvOS.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		7555FFB0242A642200829871 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F6EC61E42CFDD52900B93F09 /* Preview Content */ = {
@@ -142,12 +142,13 @@
 			);
 			name = "Sample iOS";
 			packageProductDependencies = (
-				F64846B72C3DA0F5000AC3A0 /* DatadogCrashReporting */,
-				F64846BB2C3DA0F5000AC3A0 /* DatadogWebViewTracking */,
-				F66EF2A82C8F263C00AFC7E3 /* DatadogSessionReplay */,
-				F604CAC12E68519E00A967B7 /* DatadogRUM */,
-				F604CAC32E6851A200A967B7 /* DatadogLogs */,
-				F604CACB2E68564400A967B7 /* DatadogCore */,
+				F50F50B32F544B1D00959CBF /* FlashcatCore */,
+				F50F50B52F544B1D00959CBF /* FlashcatCrashReporting */,
+				F50F50B72F544B1D00959CBF /* FlashcatLogs-NoOp */,
+				F50F50B92F544B1D00959CBF /* FlashcatRUM */,
+				F50F50BB2F544B1D00959CBF /* FlashcatSessionReplay-NoOp */,
+				F50F50BD2F544B1D00959CBF /* FlashcatTrace */,
+				F50F50BF2F544B1D00959CBF /* FlashcatWebViewTracking */,
 			);
 			productName = "Sample iOS";
 			productReference = 7555FF7B242A565900829871 /* Sample iOS.app */;
@@ -168,10 +169,13 @@
 			);
 			name = "Sample tvOS";
 			packageProductDependencies = (
-				F6ACA4BE2CFDD2240060B034 /* DatadogCrashReporting */,
-				F604CAC52E6851AC00A967B7 /* DatadogRUM */,
-				F604CAC72E6851B100A967B7 /* DatadogLogs */,
-				F604CAC92E68563D00A967B7 /* DatadogCore */,
+				F50F50C12F544D2500959CBF /* FlashcatCore */,
+				F50F50C32F544D2500959CBF /* FlashcatCrashReporting */,
+				F50F50C52F544D2500959CBF /* FlashcatLogs-NoOp */,
+				F50F50C72F544D2500959CBF /* FlashcatRUM */,
+				F50F50C92F544D2500959CBF /* FlashcatSessionReplay-NoOp */,
+				F50F50CB2F544D2500959CBF /* FlashcatTrace */,
+				F50F50CD2F544D2500959CBF /* FlashcatWebViewTracking */,
 			);
 			productName = "Sample tvOS";
 			productReference = F6ACA4B02CFDD1B60060B034 /* Sample tvOS.app */;
@@ -205,7 +209,7 @@
 			);
 			mainGroup = 7555FF72242A565900829871;
 			packageReferences = (
-				F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */,
+				F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */,
 			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
@@ -254,7 +258,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :sample:shared:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/../..\"\n./gradlew :sample:shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 		F6ACA4C22CFDD3050060B034 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -271,7 +275,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :sample:shared:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/../..\"\n./gradlew :sample:shared:embedAndSignAppleFrameworkForXcode";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -422,6 +426,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "appleApp/Preview\\ Content";
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -436,6 +441,7 @@
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-ObjC",
 					"-framework",
 					sharedLib,
 				);
@@ -467,6 +473,7 @@
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-ObjC",
 					"-framework",
 					sharedLib,
 				);
@@ -488,6 +495,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "appleApp/Preview\\ Content";
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -576,66 +584,86 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */ = {
+		F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/DataDog/dd-sdk-ios";
+			repositoryURL = "https://github.com/wnny-indea/fc-sdk-ios.git";
 			requirement = {
-				kind = exactVersion;
-				version = 3.5.0;
+				branch = feat_noop;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F604CAC12E68519E00A967B7 /* DatadogRUM */ = {
+		F50F50B32F544B1D00959CBF /* FlashcatCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogRUM;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatCore;
 		};
-		F604CAC32E6851A200A967B7 /* DatadogLogs */ = {
+		F50F50B52F544B1D00959CBF /* FlashcatCrashReporting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogLogs;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatCrashReporting;
 		};
-		F604CAC52E6851AC00A967B7 /* DatadogRUM */ = {
+		F50F50B72F544B1D00959CBF /* FlashcatLogs-NoOp */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogRUM;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = "FlashcatLogs-NoOp";
 		};
-		F604CAC72E6851B100A967B7 /* DatadogLogs */ = {
+		F50F50B92F544B1D00959CBF /* FlashcatRUM */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogLogs;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatRUM;
 		};
-		F604CAC92E68563D00A967B7 /* DatadogCore */ = {
+		F50F50BB2F544B1D00959CBF /* FlashcatSessionReplay-NoOp */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogCore;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = "FlashcatSessionReplay-NoOp";
 		};
-		F604CACB2E68564400A967B7 /* DatadogCore */ = {
+		F50F50BD2F544B1D00959CBF /* FlashcatTrace */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogCore;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatTrace;
 		};
-		F64846B72C3DA0F5000AC3A0 /* DatadogCrashReporting */ = {
+		F50F50BF2F544B1D00959CBF /* FlashcatWebViewTracking */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogCrashReporting;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatWebViewTracking;
 		};
-		F64846BB2C3DA0F5000AC3A0 /* DatadogWebViewTracking */ = {
+		F50F50C12F544D2500959CBF /* FlashcatCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogWebViewTracking;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatCore;
 		};
-		F66EF2A82C8F263C00AFC7E3 /* DatadogSessionReplay */ = {
+		F50F50C32F544D2500959CBF /* FlashcatCrashReporting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogSessionReplay;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatCrashReporting;
 		};
-		F6ACA4BE2CFDD2240060B034 /* DatadogCrashReporting */ = {
+		F50F50C52F544D2500959CBF /* FlashcatLogs-NoOp */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
-			productName = DatadogCrashReporting;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = "FlashcatLogs-NoOp";
+		};
+		F50F50C72F544D2500959CBF /* FlashcatRUM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatRUM;
+		};
+		F50F50C92F544D2500959CBF /* FlashcatSessionReplay-NoOp */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = "FlashcatSessionReplay-NoOp";
+		};
+		F50F50CB2F544D2500959CBF /* FlashcatTrace */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatTrace;
+		};
+		F50F50CD2F544D2500959CBF /* FlashcatWebViewTracking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F64846B62C3DA0F5000AC3A0 /* XCRemoteSwiftPackageReference "fc-sdk-ios" */;
+			productName = FlashcatWebViewTracking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

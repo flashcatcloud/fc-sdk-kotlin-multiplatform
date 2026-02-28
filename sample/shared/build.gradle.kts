@@ -87,7 +87,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor3.client.okhttp)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.datadog.android.sessionReplayCompose)
+            implementation("cloud.flashcat:dd-sdk-android-session-replay-compose:${libs.versions.datadog.android.get()}") {
+                exclude("cloud.flashcat", "dd-sdk-android-logs")
+                exclude("cloud.flashcat", "dd-sdk-android-session-replay")
+            }
 
             implementation(projects.features.webview)
             implementation(projects.features.sessionReplay)

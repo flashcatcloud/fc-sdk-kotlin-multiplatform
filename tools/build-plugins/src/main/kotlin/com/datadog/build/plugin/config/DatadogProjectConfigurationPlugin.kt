@@ -18,6 +18,8 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
+import org.jetbrains.kotlin.konan.target.Family
+import org.gradle.api.provider.Provider
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.testing.Test
@@ -39,7 +41,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
 import org.jetbrains.kotlin.gradle.targets.native.KotlinNativeSimulatorTestRun
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.konan.target.Family
 
 class DatadogProjectConfigurationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -183,6 +184,8 @@ private fun Project.applyKotlinMultiplatformConfig(configExtension: DatadogBuild
                 }
 
                 applySwiftCompatibilityLinkingWorkaround(this@apply)
+                projectToApply.applyLocalPodSourceConfig(this@apply)
+                projectToApply.applyCinteropCocoapodsDependencies(this@apply)
             }
         }
 }
@@ -222,6 +225,121 @@ private fun applySwiftCompatibilityLinkingWorkaround(kmpExtension: KotlinMultipl
                     }
                 }
         }
+}
+
+private fun Project.applyLocalPodSourceConfig(kmpExtension: KotlinMultiplatformExtension) {
+    // 1. Try to read from local.properties
+    var localPath: String? = null
+    var gitUrl: String? = null
+    var gitTag: String? = null
+    var gitBranch: String? = null
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        val properties = java.util.Properties()
+        localPropertiesFile.inputStream().use { properties.load(it) }
+        localPath = properties.getProperty("FC_IOS_SDK_LOCAL_PATH")
+        gitUrl = properties.getProperty("FC_IOS_SDK_GIT_URL")
+        gitTag = properties.getProperty("FC_IOS_SDK_GIT_TAG")
+        gitBranch = properties.getProperty("FC_IOS_SDK_GIT_BRANCH")
+    }
+
+    // 2. Fallback to gradle properties (gradle.properties or env variables)
+    if (localPath.isNullOrBlank()) {
+        localPath = findProperty("FC_IOS_SDK_LOCAL_PATH")?.toString()
+    }
+    if (gitUrl.isNullOrBlank()) {
+        gitUrl = findProperty("FC_IOS_SDK_GIT_URL")?.toString()
+    }
+    if (gitTag.isNullOrBlank()) {
+        gitTag = findProperty("FC_IOS_SDK_GIT_TAG")?.toString()
+    }
+    if (gitBranch.isNullOrBlank()) {
+        gitBranch = findProperty("FC_IOS_SDK_GIT_BRANCH")?.toString()
+    }
+
+    val podsExtension = (kmpExtension as ExtensionAware).extensions.findByType<CocoapodsExtension>() ?: return
+
+    if (!localPath.isNullOrBlank()) {
+        logger.info("Using local Flashcat iOS SDK from: $localPath")
+        podsExtension.pods.all {
+            this.version = null
+            this.source = this.path(file(localPath!!))
+        }
+    } else if (!gitUrl.isNullOrBlank()) {
+        val logMsg = when {
+            !gitTag.isNullOrBlank() -> "tag: $gitTag"
+            !gitBranch.isNullOrBlank() -> "branch: $gitBranch"
+            else -> "default"
+        }
+        logger.info("Using Flashcat iOS SDK from Git: $gitUrl ($logMsg)")
+        podsExtension.pods.all {
+            this.version = null
+            this.source = when {
+                !gitTag.isNullOrBlank() -> this.git(gitUrl!!) { tag = gitTag }
+                !gitBranch.isNullOrBlank() -> this.git(gitUrl!!) { branch = gitBranch }
+                else -> this.git(gitUrl!!)
+            }
+        }
+    }
+}
+
+private fun Project.applyCinteropCocoapodsDependencies(kmpExtension: KotlinMultiplatformExtension) {
+    val cocoapodsExtension = (kmpExtension as ExtensionAware).extensions
+        .findByType<CocoapodsExtension>() ?: return
+
+    kmpExtension.targets.withType<KotlinNativeTarget>().matching { it.konanTarget.family.isAppleFamily }.all {
+        val target = this
+        val isSimulator = target.konanTarget.name.contains("simulator", ignoreCase = true) ||
+            target.konanTarget.name.contains("x64", ignoreCase = true)
+        val sdkName = when (target.konanTarget.family) {
+            Family.IOS -> if (isSimulator) "iphonesimulator" else "iphoneos"
+            Family.TVOS -> if (isSimulator) "appletvsimulator" else "appletvos"
+            else -> "iphoneos"
+        }
+        val podsBaseDir = if (target.konanTarget.family == Family.TVOS) {
+            "cocoapods/synthetic/tvos"
+        } else {
+            "cocoapods/synthetic/ios"
+        }
+        val frameworkSearchPath = layout.buildDirectory.dir(podsBaseDir).get().dir("build/Debug-$sdkName").asFile.absolutePath
+
+        target.compilations.getByName("main").cinterops.all {
+            val cinterop = this
+            if (cinterop.name.startsWith("Datadog") && cinterop.name != "DatadogWebView") {
+                cocoapodsExtension.pods.all {
+                    val podName = this.name
+                    cinterop.extraOpts += listOf(
+                        "-compiler-option", "-fmodules",
+                        "-compiler-option", "-F$frameworkSearchPath/$podName",
+                        "-compiler-option", "-F$frameworkSearchPath/FlashcatInternal"
+                    )
+                }
+            }
+        }
+    }
+
+    // Auto-link tasks dependencies
+    tasks.matching {
+        it.name.startsWith("cinterop")
+    }.configureEach {
+        val cinteropTask = this
+        val isIosSimulator = cinteropTask.name.contains("IosSimulator", ignoreCase = true) || cinteropTask.name.contains("IosX64", ignoreCase = true)
+        val isIosArm64 = cinteropTask.name.contains("IosArm64", ignoreCase = true)
+        val isTvosSimulator = cinteropTask.name.contains("TvosSimulator", ignoreCase = true) || cinteropTask.name.contains("TvosX64", ignoreCase = true)
+        val isTvosArm64 = cinteropTask.name.contains("TvosArm64", ignoreCase = true)
+
+        cocoapodsExtension.pods.all {
+            val podName = this.name
+            val dependTask = when {
+                isIosSimulator -> "podBuild${podName}IosSimulator"
+                isIosArm64 -> "podBuild${podName}Ios"
+                isTvosSimulator -> "podBuild${podName}TvosSimulator"
+                isTvosArm64 -> "podBuild${podName}Tvos"
+                else -> "podBuild${podName}Ios"
+            }
+            cinteropTask.dependsOn(dependTask)
+        }
+    }
 }
 
 // endregion

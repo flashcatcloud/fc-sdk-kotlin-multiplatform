@@ -40,7 +40,14 @@ dependencies {
     implementation(libs.datadog.android.compose)
     // has to be here, because compose module above has some classes from Android RUM in public API and
     // compose module has RUM as "implementation", not "api". This is mentioned in README
-    implementation(libs.datadog.android.rum)
-    implementation(libs.datadog.android.sessionReplayCompose)
+    implementation(libs.datadog.android.rum) {
+        exclude("cloud.flashcat", "dd-sdk-android-logs")
+        exclude("cloud.flashcat", "dd-sdk-android-session-replay")
+    }
+    implementation(libs.datadog.android.sessionReplayCompose) {
+        exclude("cloud.flashcat", "dd-sdk-android-logs")
+        exclude("cloud.flashcat", "dd-sdk-android-session-replay")
+    }
+    implementation(libs.datadog.android.sessionReplay.noop)
     debugImplementation(libs.compose.ui.tooling)
 }
