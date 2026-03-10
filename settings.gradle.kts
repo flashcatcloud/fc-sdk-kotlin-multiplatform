@@ -19,8 +19,14 @@ rootProject.name = "dd-sdk-kotlin-multiplatform"
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
+        maven("https://central.sonatype.com/repository/maven-snapshots/") {
+            mavenContent {
+                includeGroup("cloud.flashcat")
+            }
+        }
     }
 }
 

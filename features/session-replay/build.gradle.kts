@@ -1,4 +1,5 @@
 import dev.mokkery.MockMode
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 /*
  * Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
@@ -32,24 +33,30 @@ kotlin {
             baseName = "DatadogKMPSessionReplay"
         }
 
-        pod("FlashcatSessionReplay") {
+        pod("FlashcatSessionReplay-NoOp") {
             moduleName = "DatadogSessionReplay"
-            extraOpts += listOf(
-                // proposed by KMP because of the @import usage in the binary
-                "-compiler-option",
-                "-fmodules"
-            )
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
         }
         pod("FlashcatCore") {
             moduleName = "DatadogCore"
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
-            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
             moduleName = "DatadogCrashReporting"
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
-            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+    }
+
+    targets.all {
+        if (this is KotlinNativeTarget && konanTarget.family.isAppleFamily) {
+            compilations.getByName("main") {
+                cinterops.create("DatadogSessionReplay")
+                cinterops.create("DatadogCore")
+                cinterops.create("DatadogCrashReporting")
+            }
         }
     }
 
@@ -57,7 +64,9 @@ kotlin {
         androidMain.dependencies {
             // need to be API, because in androidMain we have extension methods which
             // expose native interface as argument
-            api(libs.datadog.android.sessionReplay)
+            api("cloud.flashcat:dd-sdk-android-session-replay-noop:${libs.versions.datadog.android.get()}") {
+                exclude("cloud.flashcat", "dd-sdk-android-logs")
+            }
         }
         androidUnitTest.dependencies {
             implementation(libs.bundles.jUnit5)
@@ -85,3 +94,4 @@ mokkery {
 datadogBuildConfig {
     pomDescription = "The Session Replay feature to use with the Datadog monitoring library for Kotlin Multiplatform."
 }
+

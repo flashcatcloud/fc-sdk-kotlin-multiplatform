@@ -6,6 +6,8 @@
 
 import com.datadog.build.plugin.jsonschema.SchemaLocation
 import dev.mokkery.MockMode
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -35,32 +37,38 @@ kotlin {
             baseName = "DatadogKMPLogs"
         }
 
-        pod("FlashcatLogs") {
+        pod("FlashcatLogs-NoOp") {
             moduleName = "DatadogLogs"
-            extraOpts += listOf(
-                // proposed by KMP because of the @import usage in the binary
-                "-compiler-option",
-                "-fmodules"
-            )
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
         }
         // need to link it only for the tests so far (maybe this will change
         // later with SDK setup changes)
         pod("FlashcatCore") {
             moduleName = "DatadogCore"
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
-            extraOpts += listOf("-compiler-option", "-fmodules")
         }
         pod("FlashcatCrashReporting") {
             moduleName = "DatadogCrashReporting"
+            linkOnly = true
             version = libs.versions.datadog.ios.get()
-            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+    }
+
+    targets.all {
+        if (this is KotlinNativeTarget && konanTarget.family.isAppleFamily) {
+            compilations.getByName("main") {
+                cinterops.create("DatadogLogs")
+                cinterops.create("DatadogCore")
+                cinterops.create("DatadogCrashReporting")
+            }
         }
     }
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.datadog.android.logs)
+            implementation(libs.datadog.android.logs.noop)
         }
         androidUnitTest.dependencies {
             implementation(libs.bundles.jUnit5)
@@ -108,3 +116,4 @@ jsonSchemaGenerator {
         }
     }
 }
+

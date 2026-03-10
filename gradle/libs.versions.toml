@@ -7,8 +7,8 @@ androidx-fragment = "1.5.1"
 androidx-navigation-forSdk = "2.3.0"
 androidx-navigation-forApp = "2.7.7"
 androidx-activityCompose = "1.8.0"
-datadog-android = "0.3.0"
-datadog-ios = "0.4.0"
+datadog-android = "0.3.1"
+datadog-ios = "0.5.1"
 dependencyLicense = "0.4.0"
 vanniktech = "0.33.0"
 kotlinGrammarParser = "0.1.0"
@@ -53,9 +53,11 @@ android-tools = { module = "com.android.tools.build:gradle", version.ref = "agp"
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 datadog-android-core = { module = "cloud.flashcat:dd-sdk-android-core", version.ref = "datadog-android" }
 datadog-android-logs = { module = "cloud.flashcat:dd-sdk-android-logs", version.ref = "datadog-android" }
+datadog-android-logs-noop = { module = "cloud.flashcat:dd-sdk-android-logs-noop", version.ref = "datadog-android" }
 datadog-android-rum = { module = "cloud.flashcat:dd-sdk-android-rum", version.ref = "datadog-android" }
 datadog-android-webview = { module = "cloud.flashcat:dd-sdk-android-webview", version.ref = "datadog-android" }
 datadog-android-sessionReplay = { module = "cloud.flashcat:dd-sdk-android-session-replay", version.ref = "datadog-android" }
+datadog-android-sessionReplay-noop = { module = "cloud.flashcat:dd-sdk-android-session-replay-noop", version.ref = "datadog-android" }
 datadog-android-sessionReplayCompose = { module = "cloud.flashcat:dd-sdk-android-session-replay-compose", version.ref = "datadog-android" }
 datadog-android-compose = { module = "cloud.flashcat:dd-sdk-android-compose", version.ref = "datadog-android" }
 kotlinGrammarParser = { module = "com.github.kotlinx.ast:grammar-kotlin-parser-antlr-kotlin-jvm", version.ref = "kotlinGrammarParser" }
