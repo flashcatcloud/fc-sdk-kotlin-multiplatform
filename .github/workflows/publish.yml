@@ -191,6 +191,7 @@ jobs:
 
       - name: Notify secondary DingTalk group on success
         if: success()
+        continue-on-error: true
         uses: zcong1993/actions-ding@master
         with:
           dingToken: ${{ secrets.DING_TALK_TOKEN_2 }}
